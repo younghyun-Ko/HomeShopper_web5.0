@@ -1,0 +1,19 @@
+# Claude Code local session state (permission allowlists, machine-specific paths)
+.claude/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# in case any tooling is ever added at the repo root
+node_modules/
+.next/
+.vercel
+.env
+.env.local
+.env*.local
+*.tsbuildinfo
