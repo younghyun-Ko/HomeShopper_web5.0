@@ -28,7 +28,7 @@ export interface PropertyCardProps {
   onLikeToggle?: () => void;
   /** action buttons rendered on the right side of the 'row' layout */
   actionSlot?: ReactNode;
-  /** 'grid' layout only: wraps the image + info area in a link to the detail page */
+  /** wraps the image + info area in a link to the detail page (both 'grid' and 'row' layouts) */
   href?: string;
   /** 'grid' layout only: rendered below the tags, outside the link (e.g. match badge + CTA) */
   footer?: ReactNode;
@@ -75,8 +75,8 @@ export default function PropertyCard({
   className,
 }: PropertyCardProps) {
   if (layout === "row") {
-    return (
-      <div className={cn("glass flex items-center gap-4 p-4", className)}>
+    const rowBody = (
+      <>
         <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl">
           <Image
             src={imageUrl}
@@ -97,6 +97,18 @@ export default function PropertyCard({
           <p className="truncate text-[13px] text-slate">{address}</p>
           <p className="mt-1 text-[16px] font-bold text-brand-blue">{price}</p>
         </div>
+      </>
+    );
+
+    return (
+      <div className={cn("glass flex items-center gap-4 p-4", className)}>
+        {href ? (
+          <Link href={href} className="flex min-w-0 flex-1 items-center gap-4">
+            {rowBody}
+          </Link>
+        ) : (
+          rowBody
+        )}
         {actionSlot && <div className="shrink-0">{actionSlot}</div>}
       </div>
     );

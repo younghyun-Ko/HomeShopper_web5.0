@@ -14,7 +14,7 @@ export default function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/";
-  const { setUser, login } = useApp();
+  const { loginAs } = useApp();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,8 +23,7 @@ export default function LoginPageContent() {
   const handleKakaoLogin = async () => {
     setSubmitting("kakao");
     const user = await signIn({ method: "kakao" });
-    setUser(user);
-    login();
+    loginAs(user);
     setSubmitting(null);
     router.push(redirectTo);
   };
@@ -33,8 +32,7 @@ export default function LoginPageContent() {
     if (!email.trim() || !password.trim()) return;
     setSubmitting("email");
     const user = await signIn({ method: "email", email, name: email.split("@")[0] });
-    setUser(user);
-    login();
+    loginAs(user);
     setSubmitting(null);
     router.push(redirectTo);
   };

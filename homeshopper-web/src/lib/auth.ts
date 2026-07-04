@@ -25,6 +25,7 @@ export async function signIn(input: SignInInput): Promise<User> {
     phone: input.phone?.trim() || "010-0000-0000",
     isLoggedIn: true,
     authMethod: input.method,
+    email: input.method === "email" ? input.email?.trim().toLowerCase() : undefined,
   };
   return delay(user);
 }

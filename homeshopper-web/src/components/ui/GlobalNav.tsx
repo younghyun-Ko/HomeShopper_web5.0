@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Home, Heart, MapPin, User } from "lucide-react";
@@ -55,11 +56,17 @@ export default function GlobalNav({ className }: GlobalNavProps) {
       >
         <Container size="wide">
           <div className="flex h-20 items-center justify-between">
-            <Link
-              href="/"
-              className="bg-grad-primary bg-clip-text text-2xl font-bold text-transparent"
-            >
-              홈쇼퍼
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/images/logo.png"
+                alt="Home Shopper"
+                width={32}
+                height={32}
+                className="h-8 w-8 rounded-lg"
+              />
+              <span className="bg-grad-primary bg-clip-text text-2xl font-bold text-transparent">
+                Home Shopper
+              </span>
             </Link>
             <nav className="flex items-center gap-8">
               {DESKTOP_LINKS.map((link) => {

@@ -85,6 +85,7 @@ export default function CartTab({ properties, loading, onApplied }: CartTabProps
               <div key={item.propertyId}>
                 <PropertyCard
                   layout="row"
+                  href={`/properties/${property.id}`}
                   imageUrl={property.thumbnail}
                   title={property.title}
                   dealType={property.dealType}

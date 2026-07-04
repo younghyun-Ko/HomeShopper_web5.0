@@ -1,7 +1,13 @@
 import { Property } from "@/lib/types";
 
-function thumb(id: string): string {
-  return `https://picsum.photos/seed/${id}/800/500`;
+/** 매물별 이미지: 집 내부 사진 2장 + 화장실 사진 1장 (중복 없이 매물당 고유 배정) */
+function propertyImages(houseA: number, houseB: number, bathroom: number): string[] {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return [
+    `/images/house/house-${pad(houseA)}.png`,
+    `/images/house/house-${pad(houseB)}.png`,
+    `/images/bathroom/bathroom-${pad(bathroom)}.png`,
+  ];
 }
 
 export const properties: Property[] = [
@@ -18,7 +24,8 @@ export const properties: Property[] = [
     floor: 4,
     tags: ["역세권", "보안 CCTV", "경비실 상주", "방 2개 구조"],
     badges: ["상담가능", "서류인증완료"],
-    thumbnail: thumb("p1"),
+    thumbnail: "/images/house/house-01.png",
+    images: propertyImages(1, 2, 1),
     source: "네이버",
     elevator: true,
     description:
@@ -42,7 +49,8 @@ export const properties: Property[] = [
     floor: 3,
     tags: ["신축급", "대학가 인접", "풀옵션", "즉시입주 가능"],
     badges: ["상담가능"],
-    thumbnail: thumb("p2"),
+    thumbnail: "/images/house/house-03.png",
+    images: propertyImages(3, 4, 2),
     source: "직방",
     elevator: false,
     description:
@@ -61,7 +69,8 @@ export const properties: Property[] = [
     floor: 2,
     tags: ["남향 채광", "대학로 인프라", "조용한 주택가", "공간 넉넉"],
     badges: ["상담가능"],
-    thumbnail: thumb("p3"),
+    thumbnail: "/images/house/house-05.png",
+    images: propertyImages(5, 6, 3),
     source: "다방",
     elevator: false,
     description:
@@ -85,7 +94,8 @@ export const properties: Property[] = [
     floor: 2,
     tags: ["초역세권", "여대 인근", "보안 강화", "즉시입주 가능"],
     badges: ["상담가능"],
-    thumbnail: thumb("p4"),
+    thumbnail: "/images/house/house-07.png",
+    images: propertyImages(7, 8, 4),
     source: "네이버",
     elevator: false,
     description:
@@ -103,7 +113,8 @@ export const properties: Property[] = [
     floor: 7,
     tags: ["신축", "오피스텔", "건대 상권 인접", "풀옵션"],
     badges: ["상담가능", "서류인증완료"],
-    thumbnail: thumb("p5"),
+    thumbnail: "/images/house/house-09.png",
+    images: propertyImages(9, 10, 5),
     source: "직방",
     elevator: true,
     description:
@@ -122,7 +133,8 @@ export const properties: Property[] = [
     floor: 3,
     tags: ["홍대 상권", "감성 인테리어", "반려동물 가능", "즉시입주"],
     badges: ["상담가능"],
-    thumbnail: thumb("p6"),
+    thumbnail: "/images/house/house-11.png",
+    images: propertyImages(11, 12, 6),
     source: "다방",
     elevator: false,
     description:
@@ -146,7 +158,8 @@ export const properties: Property[] = [
     floor: 12,
     tags: ["역세권", "오피스텔", "투자용", "즉시입주 가능"],
     badges: ["서류인증완료"],
-    thumbnail: thumb("p7"),
+    thumbnail: "/images/house/house-13.png",
+    images: propertyImages(13, 14, 7),
     source: "네이버",
     elevator: true,
     description:
@@ -165,7 +178,8 @@ export const properties: Property[] = [
     floor: 3,
     tags: ["초저가", "고시촌", "보안 CCTV", "즉시입주"],
     badges: [],
-    thumbnail: thumb("p8"),
+    thumbnail: "/images/house/house-15.png",
+    images: propertyImages(15, 16, 8),
     source: "다방",
     elevator: false,
     description:

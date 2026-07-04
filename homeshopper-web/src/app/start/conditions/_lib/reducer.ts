@@ -18,6 +18,8 @@ export interface ConditionsWizardState {
   moveInAfter: string;
   /** 배열 순서 = 클릭 순서(우선순위). 최대 5개 */
   priorities: string[];
+  /** 보기 항목에 없는 요청사항을 자유 텍스트로 남긴 내용 (선택) */
+  customRequest: string;
 }
 
 export function createInitialState(user: User): ConditionsWizardState {
@@ -35,6 +37,7 @@ export function createInitialState(user: User): ConditionsWizardState {
     areaPyeong: "",
     moveInAfter: "",
     priorities: [],
+    customRequest: "",
   };
 }
 
@@ -51,7 +54,8 @@ export type WizardAction =
   | { type: "SET_LOAN_METHOD"; value: string }
   | { type: "SET_AREA_PYEONG"; value: string }
   | { type: "SET_MOVE_IN_AFTER"; value: string }
-  | { type: "TOGGLE_PRIORITY"; value: string };
+  | { type: "TOGGLE_PRIORITY"; value: string }
+  | { type: "SET_CUSTOM_REQUEST"; value: string };
 
 const MAX_PRIORITIES = 5;
 
@@ -99,6 +103,8 @@ export function reducer(
       if (state.priorities.length >= MAX_PRIORITIES) return state;
       return { ...state, priorities: [...state.priorities, action.value] };
     }
+    case "SET_CUSTOM_REQUEST":
+      return { ...state, customRequest: action.value };
     default:
       return state;
   }

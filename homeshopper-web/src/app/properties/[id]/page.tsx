@@ -35,13 +35,7 @@ function priceLevelFor(id: string): (typeof PRICE_LEVELS)[number] {
 }
 
 function galleryFor(property: Property): string[] {
-  return [
-    property.thumbnail,
-    ...Array.from(
-      { length: 4 },
-      (_, index) => `https://picsum.photos/seed/${property.id}-${index + 1}/1200/800`,
-    ),
-  ];
+  return property.images.length > 0 ? property.images : [property.thumbnail];
 }
 
 export default function PropertyDetailPage({ params }: { params: { id: string } }) {
@@ -361,40 +355,68 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   </div>
                 </GlassCard>
 
-                <div className="space-y-3">
-                  <GradientButton
-                    type="button"
-                    size="lg"
-                    fullWidth
-                    onClick={handleReserveVisit}
-                  >
-                    임장 예약하기
-                  </GradientButton>
-                  <GradientButton
-                    type="button"
-                    variant="secondary"
-                    fullWidth
-                    onClick={handleWishlistToggle}
-                  >
-                    <Heart
-                      className="h-4 w-4"
-                      fill={liked ? "currentColor" : "none"}
-                    />
-                    {liked ? "위시리스트에 담김" : "위시리스트에 담기"}
-                  </GradientButton>
-                  <GradientButton
-                    type="button"
-                    variant="ghost"
-                    fullWidth
-                    onClick={() =>
-                      router.push(`/analysis?propertyId=${property.id}`)
-                    }
-                  >
-                    이 매물 서류 분석하기
-                  </GradientButton>
-                </div>
-
-                {isVisited && <DealOfferCard property={property} />}
+                {isVisited ? (
+                  <>
+                    <DealOfferCard property={property} />
+                    <div className="space-y-3">
+                      <GradientButton
+                        type="button"
+                        size="lg"
+                        fullWidth
+                        onClick={() =>
+                          router.push(`/analysis?propertyId=${property.id}`)
+                        }
+                      >
+                        이 매물 서류 분석하기
+                      </GradientButton>
+                      <GradientButton
+                        type="button"
+                        variant="secondary"
+                        fullWidth
+                        onClick={handleWishlistToggle}
+                      >
+                        <Heart
+                          className="h-4 w-4"
+                          fill={liked ? "currentColor" : "none"}
+                        />
+                        {liked ? "위시리스트에 담김" : "위시리스트에 담기"}
+                      </GradientButton>
+                    </div>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    <GradientButton
+                      type="button"
+                      size="lg"
+                      fullWidth
+                      onClick={handleReserveVisit}
+                    >
+                      임장 예약하기
+                    </GradientButton>
+                    <GradientButton
+                      type="button"
+                      variant="secondary"
+                      fullWidth
+                      onClick={handleWishlistToggle}
+                    >
+                      <Heart
+                        className="h-4 w-4"
+                        fill={liked ? "currentColor" : "none"}
+                      />
+                      {liked ? "위시리스트에 담김" : "위시리스트에 담기"}
+                    </GradientButton>
+                    <GradientButton
+                      type="button"
+                      variant="ghost"
+                      fullWidth
+                      onClick={() =>
+                        router.push(`/analysis?propertyId=${property.id}`)
+                      }
+                    >
+                      이 매물 서류 분석하기
+                    </GradientButton>
+                  </div>
+                )}
               </div>
             </div>
           </div>

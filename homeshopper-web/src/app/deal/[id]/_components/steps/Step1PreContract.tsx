@@ -11,9 +11,23 @@ interface ChecklistRow {
 }
 
 const PREP_COLUMNS: ResponsiveTableColumn<ChecklistRow>[] = [
-  { key: "category", label: "구분" },
-  { key: "item", label: "항목" },
-  { key: "point", label: "핵심 포인트" },
+  {
+    key: "category",
+    label: "구분",
+    width: "15%",
+    render: (row) => (
+      <span className="inline-flex items-center rounded-full bg-brand-blue/10 px-2.5 py-1 text-[12px] font-semibold text-brand-blue">
+        {row.category}
+      </span>
+    ),
+  },
+  {
+    key: "item",
+    label: "항목",
+    width: "20%",
+    render: (row) => <span className="font-bold text-ink">{row.item}</span>,
+  },
+  { key: "point", label: "핵심 포인트", width: "65%" },
 ];
 
 const PREP_ROWS: ChecklistRow[] = [

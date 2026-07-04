@@ -1,4 +1,5 @@
 import { Property, PropertyMatch } from "@/lib/types";
+import { getPriorityMatcher } from "@/lib/priorityMatching";
 
 type ClassValue = string | number | boolean | null | undefined;
 
@@ -48,9 +49,12 @@ export function computePropertyMatch(
 ): PropertyMatch | undefined {
   if (priorities.length === 0) return property.matched;
 
-  const satisfied = priorities.filter((priority) =>
-    property.tags.some((tag) => tag.includes(priority) || priority.includes(tag)),
-  );
+  const satisfied = priorities.filter((priority) => {
+    const matcher = getPriorityMatcher(priority);
+    if (matcher) return matcher(property);
+    // 마법사에 등록되지 않은 라벨(과거 데이터 등)은 태그 텍스트 비교로 대체한다
+    return property.tags.some((tag) => tag.includes(priority) || priority.includes(tag));
+  });
   const unsatisfied = priorities.filter((priority) => !satisfied.includes(priority));
 
   return { total: priorities.length, satisfied, unsatisfied };

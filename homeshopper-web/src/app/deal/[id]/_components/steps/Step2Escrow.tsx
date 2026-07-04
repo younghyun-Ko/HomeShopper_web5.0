@@ -35,7 +35,7 @@ export default function Step2Escrow({ deal, onComplete, submitting }: Step2Escro
           </div>
           <div className="flex items-center justify-between">
             <span className="text-slate">예금주</span>
-            <span className="font-semibold text-ink">홈쇼퍼 (박철수)</span>
+            <span className="font-semibold text-ink">홈쇼퍼 (이서윤)</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-slate">입금 기간</span>

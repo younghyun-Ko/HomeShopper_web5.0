@@ -5,6 +5,8 @@ export interface ResponsiveTableColumn<T> {
   key: string;
   label: string;
   render?: (row: T) => ReactNode;
+  /** 데스크톱 표에서의 열 너비 (예: "18%") */
+  width?: string;
 }
 
 export interface ResponsiveTableProps<T> {
@@ -28,13 +30,14 @@ export default function ResponsiveTable<T extends object>({
     <div className={className}>
       {/* 데스크톱: 실제 표 */}
       <div className="hidden overflow-hidden rounded-2xl border border-black/5 md:block">
-        <table className="w-full border-collapse text-left text-[14px]">
+        <table className="w-full table-fixed border-collapse text-left text-[14px]">
           <thead>
-            <tr className="bg-black/[0.03]">
+            <tr className="bg-black/[0.04]">
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className="px-4 py-3 text-[12px] font-semibold text-slate"
+                  style={column.width ? { width: column.width } : undefined}
+                  className="px-4 py-3.5 text-[13px] font-bold tracking-tight text-ink"
                 >
                   {column.label}
                 </th>
@@ -43,9 +46,18 @@ export default function ResponsiveTable<T extends object>({
           </thead>
           <tbody>
             {rows.map((row, index) => (
-              <tr key={rowKey(row, index)} className="border-t border-black/5">
+              <tr
+                key={rowKey(row, index)}
+                className={cn(
+                  "border-t border-black/5",
+                  index % 2 === 1 && "bg-black/[0.015]",
+                )}
+              >
                 {columns.map((column) => (
-                  <td key={column.key} className="px-4 py-3 align-top text-ink">
+                  <td
+                    key={column.key}
+                    className="px-4 py-4 align-top text-[14px] leading-relaxed text-ink"
+                  >
                     {column.render ? column.render(row) : cellValue(row, column.key)}
                   </td>
                 ))}
@@ -63,14 +75,14 @@ export default function ResponsiveTable<T extends object>({
               <div
                 key={column.key}
                 className={cn(
-                  "flex flex-col gap-0.5 py-2",
+                  "flex flex-col gap-1 py-2.5",
                   columnIndex > 0 && "border-t border-black/5",
                   columnIndex === 0 && "pt-0",
                   columnIndex === columns.length - 1 && "pb-0",
                 )}
               >
-                <span className="text-[11px] font-medium text-slate">{column.label}</span>
-                <span className="text-[13px] leading-relaxed text-ink">
+                <span className="text-[12px] font-semibold text-slate">{column.label}</span>
+                <span className="text-[14px] leading-relaxed text-ink">
                   {column.render ? column.render(row) : cellValue(row, column.key)}
                 </span>
               </div>

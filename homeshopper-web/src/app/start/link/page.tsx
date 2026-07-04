@@ -102,6 +102,23 @@ export default function StartLinkPage() {
     setAddedProperties((prev) => prev.filter((property) => property.id !== id));
   };
 
+  /** 입력창에 남은 링크가 있으면 자동으로 추가한 뒤 확정 모달을 띄운다 (다른 매물 추가하기를 누르지 않아도 됨) */
+  const handleConfirm = async () => {
+    const trimmed = urlInput.trim();
+    if (trimmed) {
+      setIsParsing(true);
+      try {
+        const parsed = await parsePropertyLink(trimmed);
+        setAddedProperties((prev) => [...prev, parsed]);
+        setUrlInput("");
+        handleRemoveImage();
+      } finally {
+        setIsParsing(false);
+      }
+    }
+    setBranchModalOpen(true);
+  };
+
   const goTo = (href: string) => {
     setBranchModalOpen(false);
     router.push(href);
@@ -236,8 +253,9 @@ export default function StartLinkPage() {
                 <GradientButton
                   size="lg"
                   fullWidth
-                  disabled={!hasProperties}
-                  onClick={() => setBranchModalOpen(true)}
+                  disabled={(!hasProperties && !urlInput.trim()) || isParsing}
+                  loading={isParsing}
+                  onClick={handleConfirm}
                   className="mt-8"
                 >
                   확정

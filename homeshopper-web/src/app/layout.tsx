@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "홈쇼퍼 — 부동산 거래, 중개부터 그 이후까지",
+  title: "Home Shopper",
   description:
     "매물 탐색부터 임장, 권리분석, 계약, 이사·인테리어·대출까지 이어지는 부동산 풀서비스. 수수료는 법정 상한 요율의 절반, 정찰제로 안내해요.",
 };

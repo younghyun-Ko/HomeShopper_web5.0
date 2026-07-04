@@ -2,19 +2,9 @@
 
 import { useState } from "react";
 import { useToast } from "@/components/ui/Toast";
+import { PRIORITY_OPTIONS } from "@/lib/priorityMatching";
 import { cn } from "@/lib/utils";
 import { StepProps } from "../_lib/reducer";
-
-const PRIORITY_OPTIONS = [
-  "역세권(도보 10분 이내)",
-  "상권 및 편의시설 인접",
-  "우수 학군 및 학원가",
-  "자연환경 인접",
-  "신축(준공 5년 이내)",
-  "대단지 선호",
-  "로열층",
-  "커뮤니티 시설 유무",
-];
 
 const MAX_PRIORITIES = 5;
 
@@ -41,7 +31,7 @@ export default function Step5Priorities({ state, dispatch }: StepProps) {
         원하시는 조건을 순서대로 클릭해주세요 (최대 5개)
       </p>
       <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-        {PRIORITY_OPTIONS.map((label) => {
+        {PRIORITY_OPTIONS.map(({ label }) => {
           const order = state.priorities.indexOf(label);
           const selected = order !== -1;
           return (
@@ -67,6 +57,21 @@ export default function Step5Priorities({ state, dispatch }: StepProps) {
             </button>
           );
         })}
+      </div>
+
+      <div className="mt-8">
+        <p className="text-sm font-semibold text-ink">
+          그 외에 원하시는 조건이 있나요? <span className="font-normal text-slate">(선택)</span>
+        </p>
+        <textarea
+          value={state.customRequest}
+          onChange={(event) =>
+            dispatch({ type: "SET_CUSTOM_REQUEST", value: event.target.value })
+          }
+          placeholder="예: 저층은 피하고 싶어요, 주차 공간이 꼭 필요해요 등 자유롭게 적어주세요"
+          rows={3}
+          className="glass-surface mt-3 w-full resize-none rounded-2xl px-4 py-3 text-[14px] text-ink placeholder:text-slate/60 focus:outline-none focus:ring-2 focus:ring-brand-blue/40"
+        />
       </div>
     </div>
   );

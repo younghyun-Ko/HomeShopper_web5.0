@@ -22,7 +22,7 @@ type Phase = "form" | "onboarding";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { setUser, login } = useApp();
+  const { setUser, loginAs } = useApp();
 
   const [phase, setPhase] = useState<Phase>("form");
   const [name, setName] = useState("");
@@ -37,8 +37,7 @@ export default function SignupPage() {
   const handleKakaoSignup = async () => {
     setSubmitting("kakao");
     const user = await signIn({ method: "kakao" });
-    setUser(user);
-    login();
+    loginAs(user);
     setSubmitting(null);
     setPhase("onboarding");
   };
@@ -47,8 +46,7 @@ export default function SignupPage() {
     if (!name.trim() || !email.trim() || !password.trim()) return;
     setSubmitting("email");
     const user = await signIn({ method: "email", name, email });
-    setUser(user);
-    login();
+    loginAs(user);
     setSubmitting(null);
     setPhase("onboarding");
   };

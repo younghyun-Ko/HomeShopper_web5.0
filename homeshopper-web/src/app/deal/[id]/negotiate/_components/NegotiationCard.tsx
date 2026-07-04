@@ -142,7 +142,7 @@ export default function NegotiationCard({ deal, property, onDealChange }: Negoti
           </GradientButton>
           <GradientButton
             type="button"
-            variant="ghost"
+            variant="secondary"
             fullWidth
             onClick={() => setWithdrawConfirmOpen(true)}
           >

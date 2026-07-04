@@ -75,12 +75,18 @@ export default function ConditionsWizardPage() {
       areaPyeong: Number(state.areaPyeong || 0),
       moveInAfter: state.moveInAfter,
       priorities: state.priorities,
+      customRequest: state.customRequest.trim() || undefined,
     };
     setConditions(conditions);
     await submitConsult({
       name: state.name,
       phone: state.phone,
-      message: `선호 상담 방식: ${method}`,
+      message: [
+        `선호 상담 방식: ${method}`,
+        state.customRequest.trim() && `추가 요청사항: ${state.customRequest.trim()}`,
+      ]
+        .filter(Boolean)
+        .join(" / "),
     });
     router.push("/results");
   };

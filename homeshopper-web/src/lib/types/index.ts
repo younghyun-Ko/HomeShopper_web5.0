@@ -31,6 +31,8 @@ export interface Property {
   tags: string[];
   badges: PropertyBadge[];
   thumbnail: string;
+  /** 상세 페이지 갤러리용 이미지 목록 (집 내부 사진 2장 + 화장실 사진 1장) */
+  images: string[];
   source: PropertySource;
   elevator: boolean;
   description: string;
@@ -55,6 +57,8 @@ export interface SearchConditions {
   moveInAfter: string;
   /** 배열 순서 = 우선순위. 최대 5개 */
   priorities: string[];
+  /** 보기 항목에 없는 요청사항을 자유 텍스트로 남긴 내용 (선택) */
+  customRequest?: string;
 }
 
 // ---------- Visit cart ----------
@@ -193,6 +197,8 @@ export interface User {
   phone: string;
   isLoggedIn: boolean;
   authMethod?: AuthMethod;
+  /** 이메일 로그인 계정을 구분하는 식별자 (소문자 정규화) */
+  email?: string;
   /** 온보딩에서 고른 매수/매도 성향 */
   intent?: UserIntent;
   /** 온보딩에서 고른 관심 지역 (구 단위, 복수 선택) */

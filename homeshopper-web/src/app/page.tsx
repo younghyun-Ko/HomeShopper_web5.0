@@ -80,17 +80,19 @@ export default function Home() {
         <Container size="wide">
           <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-[55%_45%]">
             <div>
-              <h1 className="animate-fade-up text-[32px] font-bold leading-tight text-ink md:text-[56px] md:leading-[1.1]">
+              <h1 className="animate-fade-up text-[34px] font-extrabold leading-tight text-ink md:text-[58px] md:leading-[1.1]">
                 부동산 거래,
                 <br />
-                중개부터 그 이후까지.
+                모든 과정을
+                <br />
+                함께합니다.
               </h1>
-              <p className="mt-4 animate-fade-up text-lg text-slate [animation-delay:100ms] md:text-xl">
+              <p className="mt-4 animate-fade-up text-[22px] text-slate [animation-delay:100ms] md:text-[24px]">
                 수수료는{" "}
                 <span className="bg-grad-primary bg-clip-text font-semibold text-transparent">
-                  법정 상한 요율의 절반, 정찰제
+                  법정 상한 요율의 절반
                 </span>
-                예요.
+                만 주세요.
               </p>
               <div className="mt-6 flex animate-fade-up flex-wrap gap-2 [animation-delay:200ms]">
                 {TRUST_BADGES.map((badge) => (
@@ -140,7 +142,7 @@ export default function Home() {
                         tags={heroProperties[0].tags.slice(0, 2)}
                         consultAvailable={heroProperties[0].badges.includes("상담가능")}
                         verified={heroProperties[0].badges.includes("서류인증완료")}
-                        className="pointer-events-none shadow-2xl"
+                        className="pointer-events-none !bg-white shadow-2xl"
                       />
                     </div>
                   ) : (

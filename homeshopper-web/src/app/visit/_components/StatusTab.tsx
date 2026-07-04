@@ -2,10 +2,13 @@
 
 import { CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import GlassCard from "@/components/ui/GlassCard";
+import GradientButton from "@/components/ui/GradientButton";
 import { useApp } from "@/context/AppContext";
 import { VisitCartItem, Property } from "@/lib/types";
-import { cn, formatPropertyPrice } from "@/lib/utils";
+import { formatPropertyPrice } from "@/lib/utils";
 import { formatMonthDay, formatTimeLabel } from "../_lib/date-utils";
 
 export interface StatusTabProps {
@@ -15,6 +18,7 @@ export interface StatusTabProps {
 }
 
 export default function StatusTab({ properties, loading, onEdit }: StatusTabProps) {
+  const router = useRouter();
   const { state, removeFromVisitCart, markVisited } = useApp();
 
   const scheduled = state.visitCart.filter((item) => item.scheduledAt);
@@ -68,34 +72,41 @@ export default function StatusTab({ properties, loading, onEdit }: StatusTabProp
               const areaM2 = Math.round(property.areaPyeong * 3.3058);
               return (
                 <div key={item.propertyId} className="flex gap-4">
-                  <div className="flex w-16 shrink-0 flex-col items-center">
-                    <span className="whitespace-nowrap text-[13px] font-semibold text-ink">
-                      {formatTimeLabel(item.scheduledAt!.time)}
-                    </span>
-                    <span className="mt-2 w-px flex-1 bg-black/10" />
-                  </div>
-                  <GlassCard padding={16} className="flex flex-1 gap-4">
-                    <Image
-                      src={property.thumbnail}
-                      alt={property.title}
-                      width={80}
-                      height={80}
-                      className="h-20 w-20 shrink-0 rounded-2xl object-cover"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <h3 className="truncate text-[15px] font-bold text-ink">
-                        {property.title}
-                      </h3>
-                      <p className="mt-0.5 text-[13px] text-slate">
-                        {property.floor}층 · {property.areaPyeong}평 · {areaM2}㎡
-                      </p>
-                      <p className="mt-2 text-[12px] font-semibold text-brand-blue">
-                        거래 합의가격
-                      </p>
-                      <p className="text-[15px] font-bold text-ink">
-                        {formatPropertyPrice(property)}
-                      </p>
+                  {!item.visited && (
+                    <div className="flex w-16 shrink-0 flex-col items-center">
+                      <span className="whitespace-nowrap text-[13px] font-semibold text-ink">
+                        {formatTimeLabel(item.scheduledAt!.time)}
+                      </span>
+                      <span className="mt-2 w-px flex-1 bg-black/10" />
                     </div>
+                  )}
+                  <GlassCard padding={16} className="flex flex-1 gap-4">
+                    <Link
+                      href={`/properties/${item.propertyId}`}
+                      className="flex min-w-0 flex-1 gap-4"
+                    >
+                      <Image
+                        src={property.thumbnail}
+                        alt={property.title}
+                        width={80}
+                        height={80}
+                        className="h-20 w-20 shrink-0 rounded-2xl object-cover"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="truncate text-[15px] font-bold text-ink">
+                          {property.title}
+                        </h3>
+                        <p className="mt-0.5 text-[13px] text-slate">
+                          {property.floor}층 · {property.areaPyeong}평 · {areaM2}㎡
+                        </p>
+                        <p className="mt-2 text-[12px] font-semibold text-brand-blue">
+                          거래 합의가격
+                        </p>
+                        <p className="text-[15px] font-bold text-ink">
+                          {formatPropertyPrice(property)}
+                        </p>
+                      </div>
+                    </Link>
                     <div className="flex shrink-0 flex-col items-end justify-between gap-2">
                       <button
                         type="button"
@@ -104,20 +115,23 @@ export default function StatusTab({ properties, loading, onEdit }: StatusTabProp
                       >
                         삭제
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => markVisited(item.propertyId)}
-                        disabled={item.visited}
-                        className={cn(
-                          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors",
-                          item.visited
-                            ? "bg-success/15 text-success"
-                            : "glass-surface text-slate hover:bg-white/70",
-                        )}
-                      >
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        {item.visited ? "임장 완료" : "임장 완료 처리"}
-                      </button>
+                      {item.visited ? (
+                        <GradientButton
+                          type="button"
+                          onClick={() => router.push(`/properties/${item.propertyId}`)}
+                        >
+                          거래 제안하기
+                        </GradientButton>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => markVisited(item.propertyId)}
+                          className="glass-surface inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold text-slate transition-colors hover:bg-white/70"
+                        >
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          임장 완료 처리
+                        </button>
+                      )}
                     </div>
                   </GlassCard>
                 </div>
