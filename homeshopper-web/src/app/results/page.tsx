@@ -208,7 +208,7 @@ export default function ResultsPage() {
                 onClick={handleReshuffle}
               >
                 <RefreshCw className="h-4 w-4" />
-                다른 매물 추천 받기
+                다른 매물 찾아보기
               </GradientButton>
             </div>
           )}

@@ -1,6 +1,7 @@
 import {
   Agent,
   AnalysisResult,
+  BuildingStructureInfo,
   Deal,
   DealFee,
   DealStage,
@@ -16,6 +17,14 @@ import { cautionCase, getAnalysisByPropertyId, safeCase } from "@/lib/mock/analy
 import { getAgentByRole } from "@/lib/mock/agents";
 import { loans } from "@/lib/mock/loans";
 import { vendors } from "@/lib/mock/vendors";
+import { lookupBuildingRegister } from "@/lib/mock/buildingRegister";
+import { buildRecommendedProperties } from "@/lib/mock/propertyContentGenerator";
+import {
+  getPersonaPropertyById,
+  pickSimilarUserExamples,
+  SimilarUserExample,
+  SimilarUserInput,
+} from "@/lib/mock/similarUsers";
 import { computePropertyMatch } from "@/lib/utils";
 
 // ---------- internal helpers ----------
@@ -95,10 +104,17 @@ function attachMatch(property: Property, conditions: SearchConditions): Property
   return matched ? { ...property, matched } : property;
 }
 
+/** 최근 추천 결과 캐시. id(p1~p8)는 고정한 채 내용만 검색 조건에 맞춰 갈아끼워, 위시리스트·
+ * 임장 장바구니·딜 등 다른 화면이 같은 id로 상세 조회해도 방금 본 매물 그대로 이어지게 한다 */
+let currentProperties: Property[] = properties;
+
 export async function getRecommendations(
   conditions: SearchConditions,
 ): Promise<Property[]> {
-  const ranked = [...properties]
+  const generated = buildRecommendedProperties(conditions);
+  currentProperties = generated;
+
+  const ranked = [...generated]
     .map((property) => ({ property, score: scoreProperty(property, conditions) }))
     .sort((a, b) => b.score - a.score)
     .map(({ property }) => attachMatch(property, conditions));
@@ -109,7 +125,23 @@ export async function getRecommendations(
 // ---------- single property ----------
 
 export async function getProperty(id: string): Promise<Property | undefined> {
-  return delay(getPropertyById(id));
+  const fromCurrent = currentProperties.find((property) => property.id === id);
+  return delay(fromCurrent ?? getPropertyById(id) ?? getPersonaPropertyById(id));
+}
+
+// ---------- building register (건축물대장) ----------
+
+export async function getBuildingRegister(address: string): Promise<BuildingStructureInfo> {
+  return delay(lookupBuildingRegister(address));
+}
+
+// ---------- similar-user examples ----------
+
+export async function getSimilarUserExamples(
+  input: SimilarUserInput,
+  excludeIds: string[] = [],
+): Promise<SimilarUserExample[]> {
+  return delay(pickSimilarUserExamples(input, excludeIds));
 }
 
 // ---------- visit scheduling ----------

@@ -43,6 +43,27 @@ export interface Property {
 
 export type PropertyType = "원룸" | "투룸이상" | "오피스텔" | "아파트" | "빌라";
 
+/** 건축물대장 조회 결과(mock). 현재 거주 중인 집의 구조 정보 */
+export interface BuildingStructureInfo {
+  builtYear: number;
+  structureType: "계단식" | "복도식" | "타워식";
+  totalFloors: number;
+  unitFloor: number;
+  roomCount: number;
+  bathroomCount: number;
+  areaPyeong: number;
+  hasDressRoom: boolean;
+  hasPantry: boolean;
+}
+
+/** 조건 위저드 4단계에서 입력하는 "지금 집 기준" 정보 (선택) */
+export interface CurrentHomeInput {
+  address: string;
+  /** 예: "지금 살고 있는 집보다 옷방이 더 넓고, 펜트리가 있었으면 좋겠어요." */
+  requestText?: string;
+  structure?: BuildingStructureInfo;
+}
+
 export interface SearchConditions {
   dealType: DealType;
   propertyType?: PropertyType;
@@ -59,6 +80,8 @@ export interface SearchConditions {
   priorities: string[];
   /** 보기 항목에 없는 요청사항을 자유 텍스트로 남긴 내용 (선택) */
   customRequest?: string;
+  /** 지금 집 주소 기준으로 원하는 구조를 설명한 내용 (선택) */
+  currentHome?: CurrentHomeInput;
 }
 
 // ---------- Visit cart ----------

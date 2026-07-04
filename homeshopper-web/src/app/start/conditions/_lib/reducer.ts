@@ -1,5 +1,5 @@
 import { Dispatch } from "react";
-import { DealType, PropertyType, User } from "@/lib/types";
+import { BuildingStructureInfo, DealType, PropertyType, User } from "@/lib/types";
 
 export interface ConditionsWizardState {
   step: number;
@@ -16,6 +16,13 @@ export interface ConditionsWizardState {
   loanMethod: string;
   areaPyeong: string;
   moveInAfter: string;
+  /** 지금 살고 있는 집 주소 (선택) */
+  currentAddress: string;
+  /** 지금 집 기준으로 원하는 구조 요청사항 (선택) */
+  structureRequest: string;
+  /** 건축물대장 mock 조회 결과 (조회 전에는 없음) */
+  currentStructure?: BuildingStructureInfo;
+  isLookingUpStructure: boolean;
   /** 배열 순서 = 클릭 순서(우선순위). 최대 5개 */
   priorities: string[];
   /** 보기 항목에 없는 요청사항을 자유 텍스트로 남긴 내용 (선택) */
@@ -36,6 +43,10 @@ export function createInitialState(user: User): ConditionsWizardState {
     loanMethod: "",
     areaPyeong: "",
     moveInAfter: "",
+    currentAddress: "",
+    structureRequest: "",
+    currentStructure: undefined,
+    isLookingUpStructure: false,
     priorities: [],
     customRequest: "",
   };
@@ -54,6 +65,10 @@ export type WizardAction =
   | { type: "SET_LOAN_METHOD"; value: string }
   | { type: "SET_AREA_PYEONG"; value: string }
   | { type: "SET_MOVE_IN_AFTER"; value: string }
+  | { type: "SET_CURRENT_ADDRESS"; value: string }
+  | { type: "SET_STRUCTURE_REQUEST"; value: string }
+  | { type: "LOOKUP_STRUCTURE_START" }
+  | { type: "LOOKUP_STRUCTURE_DONE"; value: BuildingStructureInfo }
   | { type: "TOGGLE_PRIORITY"; value: string }
   | { type: "SET_CUSTOM_REQUEST"; value: string };
 
@@ -92,6 +107,14 @@ export function reducer(
       return { ...state, areaPyeong: action.value };
     case "SET_MOVE_IN_AFTER":
       return { ...state, moveInAfter: action.value };
+    case "SET_CURRENT_ADDRESS":
+      return { ...state, currentAddress: action.value, currentStructure: undefined };
+    case "SET_STRUCTURE_REQUEST":
+      return { ...state, structureRequest: action.value };
+    case "LOOKUP_STRUCTURE_START":
+      return { ...state, isLookingUpStructure: true };
+    case "LOOKUP_STRUCTURE_DONE":
+      return { ...state, isLookingUpStructure: false, currentStructure: action.value };
     case "TOGGLE_PRIORITY": {
       const exists = state.priorities.includes(action.value);
       if (exists) {

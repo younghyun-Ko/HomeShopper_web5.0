@@ -208,7 +208,7 @@ export default function StartLinkPage() {
                   className="mt-4 w-full"
                 >
                   <Plus className="h-4 w-4" />
-                  다른 매물 추가하기
+                  추가하기
                 </GradientButton>
 
                 {hasProperties && (

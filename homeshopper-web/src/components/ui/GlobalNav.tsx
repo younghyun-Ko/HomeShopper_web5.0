@@ -59,13 +59,13 @@ export default function GlobalNav({ className }: GlobalNavProps) {
             <Link href="/" className="flex items-center gap-2">
               <Image
                 src="/images/logo.png"
-                alt="Home Shopper"
+                alt="HomeShopper"
                 width={32}
                 height={32}
                 className="h-8 w-8 rounded-lg"
               />
               <span className="bg-grad-primary bg-clip-text text-2xl font-bold text-transparent">
-                Home Shopper
+                HomeShopper
               </span>
             </Link>
             <nav className="flex items-center gap-8">

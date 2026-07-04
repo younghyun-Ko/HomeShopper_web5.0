@@ -13,7 +13,7 @@ const DEAL_TYPE_OPTIONS: { label: string; value: DealType }[] = [
   { label: "매매", value: "매매" },
 ];
 
-const SEOUL_DISTRICTS = [
+export const SEOUL_DISTRICTS = [
   "강남구",
   "강동구",
   "강북구",

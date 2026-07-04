@@ -1,7 +1,7 @@
 import { Property } from "@/lib/types";
 
 /** 매물별 이미지: 집 내부 사진 2장 + 화장실 사진 1장 (중복 없이 매물당 고유 배정) */
-function propertyImages(houseA: number, houseB: number, bathroom: number): string[] {
+export function propertyImages(houseA: number, houseB: number, bathroom: number): string[] {
   const pad = (n: number) => String(n).padStart(2, "0");
   return [
     `/images/house/house-${pad(houseA)}.png`,
@@ -9,6 +9,18 @@ function propertyImages(houseA: number, houseB: number, bathroom: number): strin
     `/images/bathroom/bathroom-${pad(bathroom)}.png`,
   ];
 }
+
+/** 매물 이미지 세트 8개(집 내부 사진 인덱스 2개 + 화장실 사진 인덱스 1개). 매물 콘텐츠 생성기가 순환 재사용한다 */
+export const IMAGE_SETS: [number, number, number][] = [
+  [1, 2, 1],
+  [3, 4, 2],
+  [5, 6, 3],
+  [7, 8, 4],
+  [9, 10, 5],
+  [11, 12, 6],
+  [13, 14, 7],
+  [15, 16, 8],
+];
 
 export const properties: Property[] = [
   {

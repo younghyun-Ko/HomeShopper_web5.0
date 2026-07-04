@@ -76,6 +76,13 @@ export default function ConditionsWizardPage() {
       moveInAfter: state.moveInAfter,
       priorities: state.priorities,
       customRequest: state.customRequest.trim() || undefined,
+      currentHome: state.currentAddress.trim()
+        ? {
+            address: state.currentAddress.trim(),
+            requestText: state.structureRequest.trim() || undefined,
+            structure: state.currentStructure,
+          }
+        : undefined,
     };
     setConditions(conditions);
     await submitConsult({

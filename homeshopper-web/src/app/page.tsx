@@ -80,7 +80,10 @@ export default function Home() {
         <Container size="wide">
           <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-[55%_45%]">
             <div>
-              <h1 className="animate-fade-up text-[34px] font-extrabold leading-tight text-ink md:text-[58px] md:leading-[1.1]">
+              <p className="animate-fade-up bg-grad-primary bg-clip-text text-[15px] font-semibold text-transparent md:text-[16px]">
+                매물 찾기부터 안전 결제까지 다 해드려요
+              </p>
+              <h1 className="mt-2 animate-fade-up text-[34px] font-extrabold leading-tight text-ink [animation-delay:50ms] md:text-[58px] md:leading-[1.1]">
                 부동산 거래,
                 <br />
                 모든 과정을
@@ -88,9 +91,9 @@ export default function Home() {
                 함께합니다.
               </h1>
               <p className="mt-4 animate-fade-up text-[22px] text-slate [animation-delay:100ms] md:text-[24px]">
-                수수료는{" "}
-                <span className="bg-grad-primary bg-clip-text font-semibold text-transparent">
-                  법정 상한 요율의 절반
+                수수료는 법정 상한 요율의{" "}
+                <span className="bg-grad-primary bg-clip-text font-bold text-transparent">
+                  절반
                 </span>
                 만 주세요.
               </p>
@@ -253,6 +256,22 @@ export default function Home() {
             <div>
               <p className="font-semibold text-ink">조건에 맞는 매물을 추천해주세요</p>
               <p className="mt-0.5 text-[13px] text-slate">조건 5가지만 알려주세요</p>
+            </div>
+            <ChevronRight className="h-5 w-5 shrink-0 text-slate" />
+          </GlassCard>
+          <GlassCard
+            as="button"
+            padding={16}
+            onClick={() => goTo("/start/similar")}
+            className="flex w-full items-center justify-between gap-3 text-left"
+          >
+            <div>
+              <p className="font-semibold text-ink">
+                나와 비슷한 사람들이 찾은 매물을 추천해주세요
+              </p>
+              <p className="mt-0.5 text-[13px] text-slate">
+                나이·거주형태 등 몇 가지만 알려주시면 비슷한 소비자들의 거래 예시를 보여드려요
+              </p>
             </div>
             <ChevronRight className="h-5 w-5 shrink-0 text-slate" />
           </GlassCard>
