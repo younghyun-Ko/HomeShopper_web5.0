@@ -72,8 +72,10 @@ export interface SearchConditions {
   monthlyRentMax?: number;
   loanPlanned: boolean;
   loanMethod?: string;
-  district: string;
-  areaPyeong: number;
+  /** 최대 3개 */
+  districts: string[];
+  /** 평 범위. "잘 모르겠어요"를 선택하면 null */
+  areaPyeongRange: [number, number] | null;
   /** ISO date string (YYYY-MM-DD) — 이 날짜 이후 입주 희망 */
   moveInAfter: string;
   /** 배열 순서 = 우선순위. 최대 5개 */

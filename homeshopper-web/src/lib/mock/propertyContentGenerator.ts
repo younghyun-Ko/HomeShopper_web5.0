@@ -94,12 +94,15 @@ function buildOne(
   index: number,
   conditions: SearchConditions,
 ): Property {
+  const districts = conditions.districts.length > 0 ? conditions.districts : ["관악구"];
+  const district = districts[index % districts.length];
+
   const runSeed = Math.floor(Math.random() * 1_000_000);
-  const seed = runSeed + index * 97 + hashString(conditions.district || "seoul");
+  const seed = runSeed + index * 97 + hashString(district);
 
   const propertyType: PropertyType =
     conditions.propertyType || PROPERTY_TYPE_ROTATION[index % PROPERTY_TYPE_ROTATION.length];
-  const landmarks = DISTRICT_LANDMARKS[conditions.district] ?? GENERIC_LANDMARKS;
+  const landmarks = DISTRICT_LANDMARKS[district] ?? GENERIC_LANDMARKS;
   const landmark = landmarks[seed % landmarks.length];
   const walk = 2 + (seed % 13);
   const descriptor = DESCRIPTORS[Math.floor(seed / 3) % DESCRIPTORS.length];
@@ -112,7 +115,10 @@ function buildOne(
     ? structureKeywordsFrom(currentHome.requestText)
     : [];
 
-  let areaPyeong = Math.max(4, (conditions.areaPyeong || 10) + ((seed % 7) - 3));
+  const areaBaseline = conditions.areaPyeongRange
+    ? Math.round((conditions.areaPyeongRange[0] + conditions.areaPyeongRange[1]) / 2)
+    : 10;
+  let areaPyeong = Math.max(4, areaBaseline + ((seed % 7) - 3));
   let rooms = roomsFor(propertyType, seed);
   if (currentHome?.structure) {
     // "지금 집보다 넓게" 요청을 반영해 지금 집 구조 대비 최소 기준을 넘도록 보정한다
@@ -184,8 +190,8 @@ function buildOne(
   return {
     id,
     title,
-    address: `서울 ${conditions.district || "관악구"} ${landmark.replace(/역$/, "")} 인근`,
-    district: conditions.district || "관악구",
+    address: `서울 ${district} ${landmark.replace(/역$/, "")} 인근`,
+    district,
     dealType: conditions.dealType,
     deposit,
     monthlyRent,

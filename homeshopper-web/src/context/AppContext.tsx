@@ -34,6 +34,31 @@ function getAccountKey(user: User): string {
   return "kakao:demo";
 }
 
+/**
+ * 구버전 스토리지에는 SearchConditions.district(string)·areaPyeong(number)가 남아있을 수 있다.
+ * 새 스키마(districts: string[], areaPyeongRange: [number,number]|null)로 옮겨 담아,
+ * 이후 화면에서 conditions.districts.some(...) 같은 호출이 크래시하지 않게 한다.
+ */
+function migrateConditions(raw: unknown): SearchConditions | null {
+  if (!raw || typeof raw !== "object") return null;
+  const value = raw as Record<string, unknown>;
+
+  const districts = Array.isArray(value.districts)
+    ? (value.districts as string[])
+    : typeof value.district === "string" && value.district
+      ? [value.district]
+      : [];
+
+  const areaPyeongRange =
+    value.areaPyeongRange !== undefined
+      ? (value.areaPyeongRange as [number, number] | null)
+      : typeof value.areaPyeong === "number" && value.areaPyeong > 0
+        ? ([value.areaPyeong, value.areaPyeong] as [number, number])
+        : null;
+
+  return { ...value, districts, areaPyeongRange } as SearchConditions;
+}
+
 export interface AppState {
   wishlist: string[];
   visitCart: VisitCartItem[];
@@ -78,8 +103,13 @@ type Action =
 function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case "HYDRATE":
-      // 이전 버전에서 저장된 값에 새 필드가 없을 수 있으므로 기본값과 병합한다
-      return { ...initialState, ...action.payload };
+      // 이전 버전에서 저장된 값에 새 필드가 없을 수 있으므로 기본값과 병합하고,
+      // conditions는 구버전 스키마일 수 있어 별도로 마이그레이션한다
+      return {
+        ...initialState,
+        ...action.payload,
+        conditions: migrateConditions(action.payload.conditions),
+      };
 
     case "RESET_TO_GUEST":
       return { ...initialState };

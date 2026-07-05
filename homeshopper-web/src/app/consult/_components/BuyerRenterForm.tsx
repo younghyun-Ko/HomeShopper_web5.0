@@ -60,6 +60,17 @@ export default function BuyerRenterForm({ prefillIds }: BuyerRenterFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefillIds.join(",")]);
 
+  // 매물 링크로 넘어온 게 아니라면(예: /results에서 "그래도 이 조건으로 상담받기"), 조건 위저드에서
+  // 남긴 검색 조건으로 대신 채워 넣는다
+  useEffect(() => {
+    if (prefillIds.length > 0 || !state.conditions) return;
+    const conditions = state.conditions;
+    setDealType(conditions.dealType);
+    if (conditions.districts.length > 0) setDistrict(conditions.districts[0]);
+    if (conditions.budgetMax > 0) setBudget(String(Math.round(conditions.budgetMax / 10_000)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const canSubmit = district !== "" && budget.trim() !== "" && phone.trim() !== "";
 
   const submitRequest = async () => {

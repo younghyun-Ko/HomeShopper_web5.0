@@ -20,6 +20,12 @@ import { vendors } from "@/lib/mock/vendors";
 import { lookupBuildingRegister } from "@/lib/mock/buildingRegister";
 import { buildRecommendedProperties } from "@/lib/mock/propertyContentGenerator";
 import {
+  findMarketBand,
+  MarketBand,
+  MarketDealType,
+  MarketPropertyType,
+} from "@/lib/mock/marketPrice";
+import {
   getPersonaPropertyById,
   pickSimilarUserExamples,
   SimilarUserExample,
@@ -32,6 +38,13 @@ import { computePropertyMatch } from "@/lib/utils";
 /** 300~600ms 사이의 지연을 흉내내 실제 네트워크 호출처럼 동작하게 한다 */
 function delay<T>(value: T): Promise<T> {
   const ms = 300 + Math.random() * 300;
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(value), ms);
+  });
+}
+
+/** 고정 300ms 지연. 시세 조회처럼 응답 속도가 안정적이어야 하는 mock에 사용한다 */
+function delayFixed<T>(value: T, ms: number): Promise<T> {
   return new Promise((resolve) => {
     setTimeout(() => resolve(value), ms);
   });
@@ -69,11 +82,13 @@ function scoreProperty(property: Property, conditions: SearchConditions): number
 
   if (property.dealType === conditions.dealType) score += 3;
 
-  if (conditions.district && property.district.includes(conditions.district)) {
+  if (conditions.districts.some((district) => property.district.includes(district))) {
     score += 2;
   }
 
-  if (property.areaPyeong >= conditions.areaPyeong) score += 1;
+  if (conditions.areaPyeongRange && property.areaPyeong >= conditions.areaPyeongRange[0]) {
+    score += 1;
+  }
 
   const budgetBase =
     property.dealType === "매매" ? property.price ?? 0 : property.deposit;
@@ -127,6 +142,74 @@ export async function getRecommendations(
 export async function getProperty(id: string): Promise<Property | undefined> {
   const fromCurrent = currentProperties.find((property) => property.id === id);
   return delay(fromCurrent ?? getPropertyById(id) ?? getPersonaPropertyById(id));
+}
+
+// ---------- market price ----------
+
+export interface MergedMarketBand {
+  districts: string[];
+  propertyType: MarketPropertyType;
+  dealType: MarketDealType;
+  /** 만원 단위 */
+  depositRange: [number, number];
+  /** 만원 단위 */
+  depositMedian: number;
+  /** 만원 단위. 전세는 월세가 없으므로 없음 */
+  monthlyRange?: [number, number];
+  /** 만원 단위 */
+  monthlyMedian?: number;
+  /** 평 단위 */
+  typicalPyeong: [number, number];
+  sampleCount: number;
+}
+
+function median(values: number[]): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0
+    ? Math.round((sorted[mid - 1] + sorted[mid]) / 2)
+    : sorted[mid];
+}
+
+function mergeRange(ranges: [number, number][]): [number, number] {
+  return [
+    Math.min(...ranges.map(([min]) => min)),
+    Math.max(...ranges.map(([, max]) => max)),
+  ];
+}
+
+/** 선택된 구들의 시세 밴드를 최소~최대 병합 + 중간값으로 합쳐 반환한다 */
+export async function getMarketBand(
+  districts: string[],
+  propertyType: MarketPropertyType,
+  dealType: MarketDealType,
+): Promise<MergedMarketBand | undefined> {
+  const bands = districts
+    .map((district) => findMarketBand(district, propertyType, dealType))
+    .filter((band): band is MarketBand => Boolean(band));
+
+  if (bands.length === 0) return delayFixed(undefined, 300);
+
+  const monthlyRanges = bands
+    .map((band) => band.monthlyRange)
+    .filter((range): range is [number, number] => Boolean(range));
+  const hasMonthly = monthlyRanges.length === bands.length;
+
+  const merged: MergedMarketBand = {
+    districts: bands.map((band) => band.district),
+    propertyType,
+    dealType,
+    depositRange: mergeRange(bands.map((band) => band.depositRange)),
+    depositMedian: median(bands.map((band) => (band.depositRange[0] + band.depositRange[1]) / 2)),
+    monthlyRange: hasMonthly ? mergeRange(monthlyRanges) : undefined,
+    monthlyMedian: hasMonthly
+      ? median(monthlyRanges.map(([min, max]) => (min + max) / 2))
+      : undefined,
+    typicalPyeong: mergeRange(bands.map((band) => band.typicalPyeong)),
+    sampleCount: bands.reduce((sum, band) => sum + band.sampleCount, 0),
+  };
+
+  return delayFixed(merged, 300);
 }
 
 // ---------- building register (건축물대장) ----------

@@ -11,6 +11,7 @@ import type { ConsultMethod } from "@/components/domain/AgentAssignedCard";
 import { useApp } from "@/context/AppContext";
 import { submitConsult } from "@/lib/api";
 import { SearchConditions } from "@/lib/types";
+import { isUnsetRange } from "./_lib/marketSlider";
 import {
   ConditionsWizardState,
   createInitialState,
@@ -31,15 +32,15 @@ function isStepValid(step: number, state: ConditionsWizardState): boolean {
     case 1:
       return state.name.trim() !== "" && state.phone.trim() !== "";
     case 2:
-      return state.propertyType !== "" && state.district !== "";
+      return state.propertyType !== "" && state.districts.length > 0;
     case 3:
       return (
-        state.budget.trim() !== "" &&
-        (state.dealType !== "월세" || state.monthlyRent.trim() !== "") &&
+        !isUnsetRange(state.budgetRange) &&
+        (state.dealType !== "월세" || !isUnsetRange(state.monthlyRentRange)) &&
         (!state.loanPlanned || state.loanMethod.trim() !== "")
       );
     case 4:
-      return state.areaPyeong.trim() !== "" && state.moveInAfter.trim() !== "";
+      return state.areaPyeongRange !== undefined && state.moveInAfter.trim() !== "";
     case 5:
       return state.priorities.length > 0;
     default:
@@ -65,14 +66,14 @@ export default function ConditionsWizardPage() {
     const conditions: SearchConditions = {
       dealType: state.dealType,
       propertyType: state.propertyType || undefined,
-      budgetMin: 0,
-      budgetMax: Number(state.budget || 0) * 10_000,
+      budgetMin: state.budgetRange[0] * 10_000,
+      budgetMax: state.budgetRange[1] * 10_000,
       monthlyRentMax:
-        state.dealType === "월세" ? Number(state.monthlyRent || 0) * 10_000 : undefined,
+        state.dealType === "월세" ? state.monthlyRentRange[1] * 10_000 : undefined,
       loanPlanned: state.loanPlanned,
       loanMethod: state.loanPlanned ? state.loanMethod : undefined,
-      district: state.district,
-      areaPyeong: Number(state.areaPyeong || 0),
+      districts: state.districts,
+      areaPyeongRange: state.areaPyeongRange ?? null,
       moveInAfter: state.moveInAfter,
       priorities: state.priorities,
       customRequest: state.customRequest.trim() || undefined,
