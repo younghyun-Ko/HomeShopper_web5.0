@@ -1,6 +1,7 @@
 "use client";
 
-import { CheckCircle2, ShieldCheck, Users } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, ShieldCheck, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type ConsultTab = "buyer" | "seller";
@@ -61,6 +62,13 @@ export default function InfoSidebar({ tab, className }: InfoSidebarProps) {
           </div>
         ))}
       </div>
+
+      <Link
+        href="/faq"
+        className="mt-8 inline-flex items-center gap-1 text-[13px] font-semibold text-brand-blue hover:underline"
+      >
+        자주 묻는 질문 보기 <ArrowRight className="h-3.5 w-3.5" />
+      </Link>
     </div>
   );
 }

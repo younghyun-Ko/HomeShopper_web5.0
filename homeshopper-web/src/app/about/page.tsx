@@ -18,6 +18,7 @@ import PageSection from "@/components/layout/PageSection";
 import GlassCard from "@/components/ui/GlassCard";
 import GradientButton from "@/components/ui/GradientButton";
 import FaqAccordion from "./_components/FaqAccordion";
+import CoreServiceShowcase, { CORE_SERVICE_SECTIONS } from "./_components/CoreServiceShowcase";
 
 export const metadata: Metadata = {
   title: "서비스 소개 | 홈쇼퍼",
@@ -103,6 +104,17 @@ export default function AboutPage() {
                   지금 거래 시작하기
                 </GradientButton>
               </Link>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+                {CORE_SERVICE_SECTIONS.map((section) => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    className="glass-surface inline-flex items-center rounded-full px-4 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-white/70"
+                  >
+                    {section.label}
+                  </a>
+                ))}
+              </div>
             </div>
           </Container>
         </PageSection>
@@ -149,6 +161,18 @@ export default function AboutPage() {
                 )}
               </div>
             ))}
+          </div>
+        </Container>
+      </PageSection>
+
+      {/* 3.5 핵심 서비스 자세히 보기 */}
+      <PageSection>
+        <Container size="wide">
+          <h2 className="text-center text-[26px] font-bold text-ink md:text-[30px]">
+            핵심 서비스 자세히 보기
+          </h2>
+          <div className="mt-12">
+            <CoreServiceShowcase />
           </div>
         </Container>
       </PageSection>
@@ -221,6 +245,14 @@ export default function AboutPage() {
             <ShieldCheck className="h-3.5 w-3.5" />
             서류 분석 등 안내는 참고용이며 법적 효력이 없습니다. 전문가 확인을 권장합니다.
           </p>
+          <div className="mt-6 text-center">
+            <Link
+              href="/faq"
+              className="inline-flex items-center gap-1 text-[14px] font-semibold text-brand-blue hover:underline"
+            >
+              전체 FAQ 보기 <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </Container>
       </PageSection>
 

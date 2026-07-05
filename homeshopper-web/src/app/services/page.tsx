@@ -7,6 +7,7 @@ import Container from "@/components/layout/Container";
 import PageSection from "@/components/layout/PageSection";
 import GlassCard from "@/components/ui/GlassCard";
 import { useToast } from "@/components/ui/Toast";
+import { NAV_LABELS } from "@/lib/constants";
 import { SERVICE_CATEGORIES } from "./_lib/categories";
 
 export default function ServicesPage() {
@@ -43,8 +44,9 @@ export default function ServicesPage() {
       <PageSection>
         <Container size="wide">
           <h1 className="text-[28px] font-bold text-ink md:text-[32px]">
-            어떤 도움이 필요하세요?
+            {NAV_LABELS.linkedServices}
           </h1>
+          <p className="mt-2 text-[15px] text-slate">어떤 도움이 필요하세요?</p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
             <button

@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   ArrowRight,
-  ChevronRight,
   ClipboardCheck,
   FileCheck2,
   PhoneCall,
@@ -17,8 +15,8 @@ import {
 import Container from "@/components/layout/Container";
 import PageSection from "@/components/layout/PageSection";
 import GlassCard from "@/components/ui/GlassCard";
-import Modal from "@/components/ui/Modal";
 import PropertyCard from "@/components/ui/PropertyCard";
+import StartDealModal from "@/components/domain/StartDealModal";
 import { getProperty } from "@/lib/api";
 import { Property } from "@/lib/types";
 import { formatPropertyPrice } from "@/lib/utils";
@@ -34,27 +32,30 @@ const SERVICE_HIGHLIGHTS = [
     icon: Sparkles,
     title: "압축 추천",
     desc: "조건 5가지로 꼭 맞는 매물만 골라드려요.",
+    href: "/about#recommend",
   },
   {
     icon: Users,
     title: "동행 임장",
     desc: "전담 담당자가 함께 매물을 확인해요.",
+    href: "/about#visit",
   },
   {
     icon: ClipboardCheck,
     title: "서류 체크",
     desc: "등기부·건축물대장을 꼼꼼히 짚어드려요.",
+    href: "/about#analysis",
   },
   {
     icon: Timer,
     title: "거래 타임라인",
     desc: "계약부터 잔금까지 일정을 관리해요.",
+    href: "/about#timeline",
   },
 ];
 
 export default function Home() {
-  const router = useRouter();
-  const [branchModalOpen, setBranchModalOpen] = useState(false);
+  const [startModalOpen, setStartModalOpen] = useState(false);
   const [heroProperties, setHeroProperties] = useState<Property[]>([]);
 
   useEffect(() => {
@@ -67,11 +68,6 @@ export default function Home() {
       active = false;
     };
   }, []);
-
-  const goTo = (href: string) => {
-    setBranchModalOpen(false);
-    router.push(href);
-  };
 
   return (
     <main>
@@ -171,7 +167,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <button
               type="button"
-              onClick={() => setBranchModalOpen(true)}
+              onClick={() => setStartModalOpen(true)}
               className="group relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-card bg-grad-primary p-8 text-left text-white shadow-[0_20px_50px_rgba(0,131,255,0.25)] transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_28px_64px_rgba(0,131,255,0.35)] active:scale-[0.99]"
             >
               <div>
@@ -214,7 +210,7 @@ export default function Home() {
                 <h3 className="mt-4 text-[16px] font-bold text-ink">{item.title}</h3>
                 <p className="mt-1 text-[13px] text-slate">{item.desc}</p>
                 <Link
-                  href="/about"
+                  href={item.href}
                   className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold text-brand-blue hover:underline"
                 >
                   서비스 설명 보기 <ArrowRight className="h-3.5 w-3.5" />
@@ -225,58 +221,7 @@ export default function Home() {
         </Container>
       </PageSection>
 
-      <Modal
-        open={branchModalOpen}
-        onClose={() => setBranchModalOpen(false)}
-        maxWidth="sm"
-        title="어떻게 시작할까요?"
-      >
-        <h3 className="text-lg font-bold text-ink">어떻게 시작할까요?</h3>
-        <div className="mt-4 space-y-3">
-          <GlassCard
-            as="button"
-            padding={16}
-            onClick={() => goTo("/start/link")}
-            className="flex w-full items-center justify-between gap-3 text-left"
-          >
-            <div>
-              <p className="font-semibold text-ink">이미 봐둔 매물이 있어요</p>
-              <p className="mt-0.5 text-[13px] text-slate">
-                링크만 넣으면 전담 담당자가 확인해드려요
-              </p>
-            </div>
-            <ChevronRight className="h-5 w-5 shrink-0 text-slate" />
-          </GlassCard>
-          <GlassCard
-            as="button"
-            padding={16}
-            onClick={() => goTo("/start/conditions")}
-            className="flex w-full items-center justify-between gap-3 text-left"
-          >
-            <div>
-              <p className="font-semibold text-ink">조건에 맞는 매물을 추천해주세요</p>
-              <p className="mt-0.5 text-[13px] text-slate">조건 5가지만 알려주세요</p>
-            </div>
-            <ChevronRight className="h-5 w-5 shrink-0 text-slate" />
-          </GlassCard>
-          <GlassCard
-            as="button"
-            padding={16}
-            onClick={() => goTo("/start/similar")}
-            className="flex w-full items-center justify-between gap-3 text-left"
-          >
-            <div>
-              <p className="font-semibold text-ink">
-                나와 비슷한 사람들이 찾은 매물을 추천해주세요
-              </p>
-              <p className="mt-0.5 text-[13px] text-slate">
-                나이·거주형태 등 몇 가지만 알려주시면 비슷한 소비자들의 거래 예시를 보여드려요
-              </p>
-            </div>
-            <ChevronRight className="h-5 w-5 shrink-0 text-slate" />
-          </GlassCard>
-        </div>
-      </Modal>
+      <StartDealModal open={startModalOpen} onClose={() => setStartModalOpen(false)} />
     </main>
   );
 }
